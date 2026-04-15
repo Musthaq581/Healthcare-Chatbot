@@ -1,0 +1,143 @@
+{% extends 'Base.html'%}
+    {% block content%}
+    {% if messages %}
+        {% for message in messages %}
+         {% if message.tags %}  <script>alert("{{ message }}")</script> {% endif %}
+
+        {% endfor %}
+
+    {% endif %}
+    {%load static%}
+    
+<div style="background-image:  url('/media/.jpg'); background-repeat:no-repeat;background-size:cover;  height:658px; width:100%;">
+
+    <style>
+        .chatbot-container {
+    max-width: 400px;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+
+}
+
+/* Style for the chatbot messages */
+.chatbot-messages {
+    max-height: 300px;
+    overflow-y: scroll;
+    margin-bottom: 10px;
+}
+
+/* Style for user messages */
+.user-message {
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 5px 0;
+    float: right;
+    clear: both;
+}
+
+/* Style for bot messages */
+.bot-message {
+    background-color: #e5e5ea;
+    color: #000;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 5px 0;
+    float: left;
+    clear: both;
+}
+
+/* Style for the input field and send button */
+.chatbot-input {
+    display: flex;
+    align-items: center;
+}
+
+.chatbot-input input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.chatbot-input button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.chatbot-input button:hover {
+    background-color: #0056b3;
+}
+
+.chatbot-header {
+                text-align: center;
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                color: #333; /* Adjust the color as needed */
+                border: solid 2px;
+                border-radius: 5px;
+            }
+    </style>
+
+ <div class="container" style="padding-top: 100px;">
+            <div class="chatbot-container">
+                <div class="chatbot-header">AI Health Bot</div>
+              
+                <div class="chatbot-messages" id="chatbot-messages">
+                    <!-- Messages will be displayed here -->
+                </div>
+                <div class="chatbot-input">
+                    <input type="text" id="user-input" placeholder="Type your message...">
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    
+    <script>
+    function appendMessage(user, message) {
+        var chatbotMessages = document.getElementById("chatbot-messages");
+        var messageDiv = document.createElement("div");
+        messageDiv.className = user === "user" ? "user-message" : "bot-message";
+        messageDiv.innerText = message;
+        chatbotMessages.appendChild(messageDiv);
+    }
+
+    function sendMessage() {
+        var userInput = document.getElementById("user-input");
+        var userMessage = userInput.value;
+        appendMessage("user", userMessage);
+        userInput.value = "";  // Clear the input field
+
+        // Send the user message to your Django view using an AJAX request
+        $.ajax({
+            type: 'POST',
+            url: '/Message/',  // Update this with the actual URL
+            data: {
+                'message': userMessage,
+                csrfmiddlewaretoken: '{{ csrf_token }}'  // Include CSRF token for security
+            },
+            success: function (data) {
+                // Access the 'respond' property of the JSON object
+                var botResponse = data.respond;  // Update this line
+                appendMessage("bot", botResponse);
+            }
+        });
+    }
+</script>
+    
+</div>
+{%endblock%}

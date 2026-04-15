@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare</title>
+    <!-- Bootstrap javascript link -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+     <!-- bootstrap Script File -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background: #3A3E4B;
+        }
+
+        .brand {
+            color:white;
+        }
+
+        .border-hover {
+            border-top: 5px solid transparent;
+            transform: translateY(-4px);
+        }
+
+        .border-hover:hover {
+            border-top: 5px solid #ff9138;
+            transform: translateY(-4px);
+        }
+
+        #sign-in {
+            background: #FF9138;
+            border-top-left-radius: 50px;
+            border-bottom-left-radius: 50px;
+        }
+
+        .navbar-toggler {
+            border: 3px solid #FF9138;
+        }
+
+
+        .navbar-toggler-icon {
+            background-image: url(/static_files/svgs3/list.svg)
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+        #nav-length {
+            width: 90%;
+        }
+
+
+        /* body section */
+        .icon-height {
+            height: 28px;
+            width: 28px;
+        }
+
+        .icon-container {
+            background: #FF9138;
+        }
+
+        .dark-background {
+            background: #2b3944;
+        }
+        #socialWrap {
+            border-radius: 0px 24px 24px 0px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+</head>
+
+<body>
+
+    <nav>
+        <div class="navbar navbar-expand-lg pt-4">
+            <div class="container-fluid">
+                <a href="#" class="brand text-decoration-none d-block d-lg-none fw-bold fs-1 ">LOGO<img src="/media/predictive-analysis.png" height="60"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <img src="/media/ai.png" height="60"><h3 style="margin-right: -35px;color: orange;">AI HealthCare</h3>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                    <ul id="nav-length" class="navbar-nav justify-content-between border-top border-2 text-center">
+                        <li  class="nav-item">
+                            <a href="{% url 'Home'%}" class="nav-link border-hover py-3 text-white">Home</a></a>
+                        </li>
+                        {% if  request.session.type_id == 'Admin' %}
+                        <li style="padding-left: 20px;" class="nav-item">
+                            <a href="/View_Users/" class="nav-link border-hover py-3 text-white">View Users</a>
+                        </li>
+
+                        <li style="padding-left: 20px;" class="nav-item">
+                            <a href="/Manage_Question/" class="nav-link border-hover py-3 text-white">Manage Question</a>
+                        </li>
+
+                        <li style="padding-left: 20px;" class="nav-item">
+                            <a href="javascript:void(0)" onclick="trainModelNavbar()" class="nav-link border-hover py-3 text-white">Start Training</a>
+                        </li>
+                        {% elif request.session.type_id == 'User' %}
+                        <li style="padding-left: 20px;" class="nav-item">
+                            <a href="/Profile/" class="nav-link border-hover py-3 text-white">Profile</a>
+                        </li>
+                        <li style="padding-left: 20px;" class="nav-item">
+                            <a href="/Demo/" class="nav-link border-hover py-3 text-white">Bot</a>
+                        </li>
+                        <li style="padding-left: 20px;" class="nav-item">
+                            <a href="/Change_Password/" class="nav-link border-hover py-3 text-white">Change Password</a>
+                        </li>
+
+                        <li style="padding-left: 20px;" class="nav-item">
+                            <a href="/U_NearbyHospitals/" class="nav-link border-hover py-3 text-white">Nearby Hospital/Clinics</a>
+                        </li>
+                        {%endif%}
+
+
+                        {% if  request.session.login == 'Yes' %}
+				       <ul class="navbar-nav ms-auto">
+				        {% if  request.session.type_id == 'Admin' %}
+				         <li class="nav-item"><a class = "nav-link border-hover py-3 text-white" style="color:black;">Hi, {{request.session.UserType}}</a></li>
+				        {% else %}
+				         <li class="nav-item"><a class = "nav-link border-hover py-3 text-white" style="color:black;">Hi, {{request.session.UserType}}</a></li>
+				        {% endif %}
+				       <li class="nav-item"><a class = "nav-link border-hover py-3 text-white" href="{% url 'Logout'%}" style="color:black;">LogOut</a></li>
+				        {% else %}
+
+
+                        <li class="nav-item dropdown" style="padding-right: 100px;">
+			          <a class="nav-link dropdown-toggle  border-hover py-3 text-white" href="#" id="navbarDropdown sign-in" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+			            Login
+			          </a>
+			          <ul style="background-color: orange;" class="dropdown-menu" aria-labelledby="navbarDropdown">
+			            <li><a style="color:black;" class="dropdown-item " href="/Admin_Login/">Admin</a></li>
+			            <li><hr class="dropdown-divider"></li>
+			            <li><a style="color:black;" class="dropdown-item" href="/User_Login/">User</a></li>
+			          </ul>
+		        	</li>
+                    </ul>
+                {%endif%}
+                </div>
+            </div>
+        </div>
+    </nav>
+   
+   
+
+    {% block content %}
+
+{% endblock %}
+
+<!-- Navbar training spinner -->
+<div id="nav-loading-spinner-container" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+  <div id="nav-loading-spinner" style="background-image:url('/media/robot.png'); background-size:100px; width:100px; height:100px; margin:20% auto; animation: spin 2s linear infinite;"></div>
+</div>
+<style>
+@keyframes spin {0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+</style>
+
+<script>
+function trainModelNavbar() {
+  document.getElementById('nav-loading-spinner-container').style.display = 'block';
+  $.ajax({
+    url: '/train_model/',
+    type: 'GET',
+    success: function(data) {
+      document.getElementById('nav-loading-spinner-container').style.display = 'none';
+      if (data && data.message) {
+        alert(data.message);
+      } else {
+        alert('Training completed');
+      }
+    },
+    error: function() {
+      document.getElementById('nav-loading-spinner-container').style.display = 'none';
+      alert('Error training the model');
+    }
+  });
+}
+</script>
+</body>
+
+</html>

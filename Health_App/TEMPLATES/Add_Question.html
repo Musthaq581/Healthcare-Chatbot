@@ -1,0 +1,95 @@
+{% extends 'Base.html'%}
+    {% block content%}
+    {% if messages %}
+        {% for message in messages %}
+         {% if message.tags %}  <script>alert("{{ message }}")</script> {% endif %}
+
+        {% endfor %}
+
+    {% endif %}
+    {%load static%}
+    <style>
+        .box{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 20px;
+    }
+
+    .box>div {
+ width: 600px;
+  height: auto;
+  background-color: #fae8d2;
+/*  border: 1px solid;*/
+  padding: 10px;
+  box-shadow: 5px 10px #888888;
+  border-radius: 10px;
+ /* overflow: scroll;*/
+/*  overflow-x: hidden;*/
+}
+
+input[type=submit]{
+    box-shadow: inset 0 0 0 0 #54b3d6;
+  transition: color .4s ease-in-out, box-shadow .2s ease-in-out;
+}
+
+input[type=submit]:hover {
+  box-shadow: inset 100px 0 0 0 #54b3d6;
+  color: white;
+}
+        
+    </style>
+<div style="background-image:  url('/media/.jpg'); background-repeat:no-repeat;background-size:cover;  height:658px; width:100%;">
+    <div class="box">
+       <div>
+        <h1>Add Question</h1>
+        <hr>
+            <form method="POST" action="/Add_Question/" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-8">
+                        <label class="form-label">Tag</label>
+                        <input type="text" class="form-control" name="tag">
+                    </div>
+
+                <div class="col-md-12">
+                    <label class="form-label">Question</label>
+                    <input class="form-control" type="text" name="question" required>
+                </div>
+            </div>
+            <br>
+             
+
+             <div class="row">
+                 <div class="col-md-12">
+                    <label class="form-label">Answer</label>
+                     <textarea name="answer" class="form-control" rows="4">
+                         
+                     </textarea>
+                 </div>
+             </div>
+
+             <br>
+
+             <div class="row">
+                <div class="col-md-12">
+                     <label class="form-label">Keywords</label>
+                     <input type="text"  name="keywords" class="form-control">
+                </div>   
+             </div>
+
+             <br>
+             <br>
+             <br>
+
+            <div class="row">
+                <div class="col-md-12" style="display:flex;justify-content: center;align-items: center;">
+                    <input type="submit" name="" value="Submit" class="btn btn-secondary">
+                </div>
+            </div>
+            </form>
+       
+       </div>
+    </div>
+</div>
+    {% endblock %}

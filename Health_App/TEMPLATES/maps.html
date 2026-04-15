@@ -1,0 +1,124 @@
+ {% extends 'base.html'%}
+    {% block content%}
+    {% if messages %}
+        {% for message in messages %}
+         {% if message.tags %}  <script>alert("{{ message }}")</script> {% endif %}
+
+        {% endfor %}
+
+    {% endif %}
+
+    <style>
+
+   .iframe-container{
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* Ratio 16:9 ( 100%/16*9 = 56.25% ) */
+}
+.iframe-container >
+{
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    height: 200px;
+    width: 100%;
+}
+
+ </style>
+
+<div style="background: url('/media/bg3.png'); background-repeat:no-repeat;background-size:cover; color: white; height:700px; width: 100;">
+<br><br>
+
+
+ <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?&key=AIzaSyDGglbl1JN2Hdz8568f_Fiug05_wsZPDYI"></script>
+
+
+
+
+<div class="row">
+  <div class="col-md-1"></div>
+  <div class="col-md-10">
+     <div id="dvMap" style="height: 500px;width: 100%"></div>
+     {% for or in user %}  
+     <input type="hidden" name="userlat" id="userlat" value="{{or.Lat}}">
+     <input type="hidden" name="userlng" id="userlng" value="{{or.Lng}}">
+       {% endfor %} 
+  </div>
+  <div class="col-md-1"></div>
+</div>
+
+  <script type="text/javascript">
+
+var lat = document.getElementById("userlat").value  
+var lng = document.getElementById("userlng").value
+var markers = '{{ StoreDataStr | safe }}';
+var obj = $.parseJSON(markers);
+var e = obj[0]["fields"].Lat;
+
+        window.onload = function () {
+            var mapOptions = {
+                center: new google.maps.LatLng(obj[0]["fields"].Lat, obj[0]["fields"].Lng),
+                zoom: 14,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+
+            };
+            var infoWindow = new google.maps.InfoWindow();
+            var map = new google.maps.Map(document.getElementById("dvMap"), mapOptions);
+            for (i = 0; i < obj.length; i++) {
+                var data = obj[i]["fields"];
+                var myLatlng = new google.maps.LatLng(data.Lat, data.Lng);
+                var marker = new google.maps.Marker({
+                    position: myLatlng,
+                    map: map,
+                    title: data.hospitalname
+                });
+                (function (marker, data) {
+                    google.maps.event.addListener(marker, "click", function (e) {
+
+                       var contentString = '<div id="content">'+'<div id="siteNotice">'+
+      '</div>'+
+      '<h3 id="firstHeading" class="firstHeading" style = "color:black">'+data.hospitalname+'</h3>'+
+      '<div id="bodyContent">'+
+      '<p style = "color:black"><b>Address  :</b> '+data.hospitalname+'</p>'+
+      '<p style = "color:black"><b>Get Directions:</b><a target="_self"  class="btn btn-success" href="https://www.google.com/maps/dir/?api=1&origin='+lat+','+lng+'&destination='+data.Lat+','+data.Lng+'">'+
+      'Click Here</a> '+
+      '</p>'+
+      '</div>'+
+      '</div>';
+
+              
+
+
+                        infoWindow.setContent(contentString);
+                        infoWindow.open(map, marker);
+                    });
+                })(marker, data);
+            }
+
+            var simg = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+            var img = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+
+            var marker_start = new google.maps.Marker({
+                position: new google.maps.LatLng(lat, lng),
+                title: 'Your Location',
+                icon: simg,
+                map: map,
+
+            });
+        }
+
+
+ </script>
+
+
+
+
+<br>
+
+</div>
+    {% endblock%}

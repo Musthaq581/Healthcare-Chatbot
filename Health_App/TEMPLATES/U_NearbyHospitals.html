@@ -1,0 +1,66 @@
+{% extends 'base.html'%}
+    {% block content%}
+    {% if messages %}
+        {% for message in messages %}
+         {% if message.tags %}  <script>alert("{{ message }}")</script> {% endif %}
+
+        {% endfor %}
+
+{% endif %}
+<div style="background: url('/media/bg3.png'); background-repeat:no-repeat;background-size:cover; color: white; height:700px; width: 100;">
+<br><br>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function (p) {
+        var LatLng = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
+        var lat = p.coords.latitude;
+        var lon = p.coords.longitude;
+        $.Lat = lat;
+        $.Lon = lon;
+        var mapOptions = {
+            center: LatLng,
+            zoom: 13,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("dvMap"), mapOptions);
+        var marker = new google.maps.Marker({
+            position: LatLng,
+            map: map,
+            title: "<div style = 'height:60px;width:200px'><b>Your location:</b><br />Latitude: " + p.coords.latitude + "<br />Longitude: " + p.coords.longitude
+        });
+        google.maps.event.addListener(marker, "click", function (e) {
+            var infoWindow = new google.maps.InfoWindow();
+            infoWindow.setContent(marker.title);
+            infoWindow.open(map, marker);
+        });
+        {
+            $.ajax({
+                type: "POST",
+                url: '{% url 'U_NearbyHospitals' %}',
+                data: 
+                {
+                    'text1': $.Lat,
+                    'text2': $.Lon,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                //dataType: 'json',
+                success: function (data)
+                {
+                    window.location.href = "../maps";
+                }
+            });
+        }
+    });
+}
+ else {
+    alert('Geo Location feature is not supported in this browser.');
+}
+</script>
+<div class="container">
+    <br>
+<div id="dvMap" style="display: block;position: absolute;top: 0;right: 0;bottom: 0;left: 0;margin: 0;padding: 0;height: 100px;width: 100%;position: relative;padding-bottom: 38.25%;">
+</div>
+</div>
+
+{% endblock %}

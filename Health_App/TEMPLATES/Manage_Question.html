@@ -1,0 +1,257 @@
+{% extends 'Base.html'%}
+    {% block content%}
+    {% if messages %}
+        {% for message in messages %}
+         {% if message.tags %}  <script>alert("{{ message }}")</script> {% endif %}
+
+        {% endfor %}
+
+    {% endif %}
+    {%load static%}
+    
+<div style="background-image:  url('/media/.jpg'); background-repeat:no-repeat;background-size:cover;  height:658px; width:100%;">
+
+<style>
+    #loading-spinner-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 9999;
+    text-align: center;
+
+}
+
+#loading-spinner {
+     background-image: url('/media/robot.png');
+    background-size: 100px; /* Adjust the size as needed */
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 100px;
+    height: 100px;
+    animation: spin 2s linear infinite;
+    margin: 20% auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+
+<!-- Modal for view button -->
+<!-- View Modal -->
+<div class="modal fade" id="myModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+             <div class="container">
+        <form class="row g-3" method="POST" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+              <div class="col-md-6">
+                    <label  class="form-label">ID</label>
+                    <input type="text" class="form-control" name="updateid" id="updateid"  readonly>
+              </div>
+
+              <div class="col-md-6">
+                    <label  class="form-label">Question</label>
+                    <input type="text" class="form-control" name="updatename" id="updatename"  readonly>
+              </div>
+
+              <div class="col-md-12">
+                    <label for="inputPassword4" class="form-label">Answer</label>
+                    <!-- <input type="text" class="form-control" name="updateage" id="updateage"  readonly> -->
+
+                    <textarea rows="4" class="form-control" id="updateage">
+                        
+                    </textarea>
+              </div>
+
+              <div class="col-6">
+                    <label for="inputAddress" class="form-label">Keywords</label>
+                    <input type="text" class="form-control"  
+                    name="updategender" id="updategender"  >
+              </div>     
+        </form>
+    </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ---------------------------------------------------------------------------------------------------------------------- -->
+
+<!-- Modal for update button -->
+<!-- Update Modal -->
+<div class="modal fade" id="myModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+             <div class="container">
+        <form class="row g-3" method="POST"  action="/Update_Question/" enctype="multipart/form-data">
+            {% csrf_token %}
+              <div class="col-md-6">
+                    <label  class="form-label">ID</label>
+                    <input type="text" class="form-control" name="viewid" id="viewid"  readonly>
+              </div>
+
+              <div class="col-md-6">
+                    <label  class="form-label">Question</label>
+                    <input type="text" class="form-control" name="question" id="viewname"  required>
+              </div>
+
+              <div class="col-md-12">
+                    <label for="inputPassword4" class="form-label">Answer</label>
+                    <textarea   rows="4" name="answer" class="form-control" id="viewage">
+                        
+                    </textarea>
+              </div>
+
+              
+
+              <div class="col-6">
+                    <label for="inputAddress" class="form-label">Keywords</label>
+                    <input type="text" class="form-control"  
+                    name="keywords" id="viewgender"  >
+              </div>
+
+              <div class="col-md-12">
+                  <input class="btn btn-secondary" type="submit" name="">
+              </div>
+        </form>
+    </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+   <center><h1 style="background-color: rgba(255, 255, 255, 0.5); padding: 10px;">Manage Question</h1></center>
+
+    <br>
+
+    <div class="container" style="display:flex;justify-content: right;align-items: right;">
+        <a class="btn btn-warning" href="/Add_Question/">Add Question</a>
+        &nbsp;
+        <button class="btn btn-info" onclick="trainModel()">Train Model</button>
+    </div>
+
+    <div id="loading-spinner-container">
+    <div id="loading-spinner"></div>
+    </div>
+
+    <div class="container" style="padding-top:20px;">
+        <table class="table table-dark table-stripped table-hover">
+            <thead>
+                <th style="text-align: center;">ID</th>
+                <th style="text-align: center;">Question</th>
+                <th  style="text-align: center;"colspan="3">Action</th>
+            </thead>
+
+            <tbody>
+                {%for i in details%}
+                <tr>
+                    <td style="text-align: center;">{{i.id}}</td>
+                    <td style="text-align: center;">{{i.Tag}}</td>
+                    <td>
+                            <input type="button" class="btn btn-info "id=" {{i.id}}
+                                                            ${{i.Question}}
+                                                            ${{i.Answer}}
+                                                            ${{i.Keywords}}"
+                             value="View" onclick="View(this)" style="width: 100%;">
+                    </td>
+                  <!--   <td>
+                            <input type="button" class="btn btn-secondary "id=" {{i.id}}
+                                                            ${{i.Question}}
+                                                            ${{i.Answer}}
+                                                            ${{i.Keywords}}"
+                             value="Update" onclick="Update(this)" style="width: 100%;">
+                    </td> -->
+
+                    <td><a class="button btn btn-danger" href="/Delete_Question/{{i.id}}" style="width: 100%;">Delete</a></td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+    function View(me){
+        var id          = me.id;
+        var str         = id.split("$");
+        var ids         = str[0];
+        var Question        = str[1];
+        var Answer         = str[2];
+        var Keyword      = str[3];
+       
+       
+
+        document.getElementById("updateid").value       = ids;
+        document.getElementById("updatename").value     = Question;
+        document.getElementById("updateage").value      = Answer;
+        document.getElementById("updategender").value   = Keyword;
+        
+        $('#myModal1').modal('show');
+    }
+
+
+    function Update(me){
+        var id          = me.id;
+        var str         = id.split("$");
+        var ids         = str[0];
+        var Question        = str[1];
+        var Answer         = str[2];
+        var Keyword      = str[3];
+      
+       
+
+        document.getElementById("viewid").value       = ids;
+        document.getElementById("viewname").value     = Question;
+        document.getElementById("viewage").value     = Answer;
+        document.getElementById("viewgender").value   = Keyword;
+
+        
+        $('#myModal2').modal('show');
+    }  
+
+    function trainModel() {
+    // Show the loading spinner
+    document.getElementById('loading-spinner-container').style.display = 'block';
+
+    // Make an AJAX request to trigger model training
+    $.ajax({
+        url: '/train_model/',  // URL mapped to train_chatbot_model view
+        type: 'GET',
+        success: function(data) {
+            // Hide the loading spinner on success
+            document.getElementById('loading-spinner-container').style.display = 'none';
+            alert(data.message);  // Display a success message to the user
+        },
+        error: function() {
+            // Hide the loading spinner on error
+            document.getElementById('loading-spinner-container').style.display = 'none';
+            alert('Error training the model');
+        }
+    });
+}
+      
+
+    </script>
+{%endblock%}
